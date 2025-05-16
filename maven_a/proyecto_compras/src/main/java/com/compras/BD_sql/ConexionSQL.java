@@ -8,9 +8,9 @@ public class ConexionSQL {
     Connection conect = null;
     Dotenv
 
-    final String url = "jdbc:postgresql://DESKTOP-T7MMDGJ:5432/bd_hola";
-    final String usuario = "postgres";
-    final String contrasena = "Miyakobase_";
+    final String url = "jdbc:postgresql://localhost:5433/bd_hola";
+    final String usuario = "-usuario-";
+    final String contrasena = "-contrasena";
     
     public Connection conectar(){
         try {
