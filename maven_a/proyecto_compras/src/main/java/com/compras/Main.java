@@ -3,9 +3,10 @@ package com.compras;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-import com.compras.conexion_sql.*;
+
+import com.compras.BD_sql.*;
 import com.compras.consulta_sql.Datos_consulta;
-import com.compras.producto.*;
+import com.compras.prenda.*;
 
 /**
  * Programa con base de datos!
@@ -20,13 +21,146 @@ public class Main
         mostrarMenu();
     }
 
+    private static void mostrarMenu(){
+        boolean bandera=false; 
+        int opcion;
+        String dato_entrada;
+        
+        //Título y mensaje de bienvenida
+        crearTitulo("Bienvenido a (nombre tienda de ropa)");
+
+        final String menuInicio = "Menu de inicio"
+        +"\nPor favor, seleccione una de las opciones mostradas a continuacion\n"
+        +"\n1. Nuevo articulo"
+        +"\n2. Buscar articulo"
+        +"\n0. Salir";
+
+        do {
+            //Se le solicita
+            dato_entrada = JOptionPane.showInputDialog(null, menuInicio, "Inicio", JOptionPane.INFORMATION_MESSAGE);
+
+            if (dato_entrada==null) {
+                JOptionPane.showMessageDialog(null, "Cerrando programa...", "Programa finalizado", JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+            else if (dato_entrada.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Este campo no puede estar vacio", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
+            else {
+                try {
+                    opcion = Integer.parseInt(dato_entrada);
+                    switch (opcion) {
+                        case 1:
+                            leerDatos();
+                            break;
+                        case 2:
+                            consulta_BD();
+                            break;
+                        case 0:
+                            JOptionPane.showMessageDialog(null, "Cerrando programa...", "Programa finalizado", JOptionPane.PLAIN_MESSAGE);
+                            bandera=true;
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "Opcion no valida", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                            break;
+                        }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Tipo de dato no valido, por favor ingrese un numero", "Error "+e.getMessage(), JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } while (!bandera);
+
+        return;
+    }
+
+    private static void crearTitulo(String titulo){
+        String asteriscos = "-".repeat(titulo.length()*3);
+        String espacios = " ".repeat(titulo.length()-1);
+
+        JOptionPane.showMessageDialog(null, "\n" + asteriscos+"\n"
+        +"|" + espacios + titulo + espacios + "|\n"
+        +asteriscos + "\n", "Bienvenida", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private static void leerDatos(){
+        String cod, cat, marc, color, talla;
+        int stock;
+        double prc;
+
+        cod = leerCadena("Los codigos deben escribirse de la forma [ABCD00]\n"
+                +"\nCodigo: "); 
+        if (cod==null){   //Si la cadena tiene el valor de null, entonces el usuario usó la opción de cancelar o intentó cerrar la ventana. Devuelve return y regresa al menú
+        }
+        else {
+            cod = validarCodigo(cod);   //Se verifica el formato del código
+        }
+
+        cat = leerCadena("Categorias compatibles: "
+                +"\nCamisa, Pantalon, Sueter, "
+                +"\nChaleco, Vestido, Zapato, Calceta, Bolso\n"
+                +"\nCategoria del articulo: ");
+        if (cat==null){
+            return;
+        }
+        else {
+            cat = validarCategoria(cat); //Se verifica las categorias disponibles
+        }
+
+        marc = leerCadena("Marcas disponibles: "
+                +"\nAdidas, Zara, Converse, "
+                +"\nFila, Umbro, NEW BALANCE, CHANEL, Dolce&Gabanna\n"
+                +"\nMarca del articulo: ");
+        if (marc==null){
+            return; 
+        }
+        else {
+            marc = validarMarca(marc);  //Se verifican las marcas disponibles
+        }
+
+        color = leerCadena("Los colores deben escribirse en codigo HEX"
+        +"\nEjemplo: #FF1111\n"
+        +"\nColor del articulo: ");
+        if (color==null){
+            return;
+        }
+        else{
+            color = validarColor(color);   //Se verifica el formato del código de color
+        }
+
+        talla = leerCadena("Lista de tallas disponibles"
+        +"\nXXS, XS, S"
+        +"\nM, L, XL, XXL\n"
+        +"\nTalla del articulo: ");
+        if (talla==null){
+            return;
+        } else{
+            talla = validarTalla(talla);  //Se valida que el usuario haya ingresado una talla válida
+        }
+
+        stock = leerEntero("Stock: ");
+        if (stock==-1) {  //Si la variable devuelve -1, quiere decir que el usuario usó la opción de cancelar o intentó cerrar la ventana. Devuelve return y regresa al menú
+            return;
+        }
+
+        prc = leerDecimal("Precio de costo (monto en Lempiras)");
+        if (prc==-1){
+            return;
+        }
+
+        //Creacion del método constructor solamente cuando los datos ya han sido validados
+        Prenda prod = new Prenda(cod, cat, marc, color, talla, stock, prc);
+
+        //Método donde se enviarán los datos a la BD
+        enviardatos_bd(prod);
+    }
+
     private static String leerCadena(String mensaje){
         String dato_entrada;
 
         do {
             dato_entrada=JOptionPane.showInputDialog(null, mensaje, "Introduzca la informacion que se le solicita", JOptionPane.PLAIN_MESSAGE);
 
-            if (volverMenu(dato_entrada)){
+            if (volverMenu(dato_entrada)){   
                 return null;
             }
             else if (dato_entrada.trim().isEmpty()) {
@@ -96,139 +230,8 @@ public class Main
             } 
         } while (true);
     }
-
-    private static void crearTitulo(String titulo){
-        String asteriscos = "-".repeat(titulo.length()*3);
-        String espacios = " ".repeat(titulo.length()-1);
-
-        JOptionPane.showMessageDialog(null, "\n" + asteriscos+"\n"
-        +"|" + espacios + titulo + espacios + "|\n"
-        +asteriscos + "\n", "Bienvenida", JOptionPane.PLAIN_MESSAGE);
-    }
-
-    private static void mostrarMenu(){
-        boolean bandera=false;
-        int opcion;
-        String dato_entrada;
-        
-        //Título 
-        crearTitulo("Bienvenido a (nombre tienda de ropa)");
-
-        final String menuInicio = "Menu de inicio"
-        +"\nPor favor, seleccione una de las opciones mostradas a continuacion\n"
-        +"\n1. Nuevo articulo"
-        +"\n2. Buscar articulo"
-        +"\n0. Salir";
-
-        do {
-            dato_entrada = JOptionPane.showInputDialog(null, menuInicio, "Inicio", JOptionPane.INFORMATION_MESSAGE);
-            if (dato_entrada==null) {
-                JOptionPane.showMessageDialog(null, "Cerrando programa...", "Programa finalizado", JOptionPane.PLAIN_MESSAGE);
-                return;
-            }
-            else if (dato_entrada.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Este campo no puede estar vacio", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            }
-            else {
-                try {
-                    opcion = Integer.parseInt(dato_entrada);
-                    switch (opcion) {
-                        case 1:
-                            leerDatos();
-                            break;
-                        case 2:
-                            consulta_BD();
-                            break;
-                        case 0:
-                            JOptionPane.showMessageDialog(null, "Cerrando programa...", "Programa finalizado", JOptionPane.PLAIN_MESSAGE);
-                            bandera=true;
-                            break;
-                        default:
-                            JOptionPane.showMessageDialog(null, "Opcion no valida", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                            break;
-                        }
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Tipo de dato no valido, por favor ingrese un numero", "Error "+e.getMessage(), JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        } while (!bandera);
-
-        return;
-    }
-
-    private static void leerDatos(){
-        String cod, cat, marc, color, talla;
-        int stock;
-        double prc;
-
-        cod = leerCadena("Los codigos deben escribirse de la forma [ABCD00]\n"
-                +"\nCodigo: "); 
-        if (cod==null){
-            return;
-        }
-        else {
-            cod = validarCodigo(cod);
-        }
-
-        cat = leerCadena("Categorias compatibles: "
-                +"\nCamisa, Pantalon, Sueter, "
-                +"\nChaleco, Vestido, Zapato, Calceta, Bolso\n"
-                +"\nCategoria del articulo: ");
-        if (cat==null){
-            return;
-        }
-        else {
-            cat = validarCategoria(cat);
-        }
-
-        marc = leerCadena("Marcas disponibles: "
-                +"\nAdidas, Zara, Converse, "
-                +"\nFila, Umbro, NEW BALANCE, CHANEL, Dolce&Gabanna\n"
-                +"\nMarca del articulo: ");
-        if (marc==null){
-            return; 
-        }
-        else {
-            marc = validarMarca(marc);
-        }
-
-        color = leerCadena("Los colores deben escribirse en codigo HEX"
-        +"\nEjemplo: #FF1111\n"
-        +"\nColor del articulo: ");
-        if (color==null){
-            return;
-        }
-        else{
-            color = validarColor(color);
-        }
-
-        talla = leerCadena("Lista de tallas disponibles"
-        +"\nXXS, XS, S"
-        +"\nM, L, XL, XXL\n"
-        +"\nTalla del articulo: ");
-        if (talla==null){
-            return;
-        } else{
-            talla = validarTalla(talla);
-        }
-
-        stock = leerEntero("Stock: ");
-        if (stock==-1) {
-            return;
-        }
-
-        prc = leerDecimal("Precio de costo (monto en Lempiras)");
-        if (prc==-1){
-            return;
-        }
-
-        //Creacion del método constructor solamente cuando los datos ya han sido validados
-        Producto prod = new Producto(cod, cat, marc, color, talla, stock, prc);
-
-        //Método donde se enviarán los datos a la BD
-        enviardatos_bd(prod);
-    }
-
+    
+    //Este método verifica si la entrada de usuario fue null. En caso de ser así, permite salir del programa en ese momento
     private static boolean volverMenu(String dato){
         boolean validacion = false;
         int confirmar;
@@ -249,7 +252,7 @@ public class Main
 
     private static String validarCodigo(String codigo){
         do{
-            //Verifica si la longitud es de 6 caracteres
+            //Verifica el formato del código introducido
             if (!codigo.matches("[a-zA-Z]{4}\\d{2}")) {
                 JOptionPane.showMessageDialog(null, "El formato del codigo no es valido", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 codigo=leerCadena("Los codigos deben escribirse de la forma [ABCD00]\n"
@@ -361,13 +364,13 @@ public class Main
         return talla_mayus;
     }
 
-    private static void enviardatos_bd(Producto prod){
-        Enviar datos = new Enviar();
+    private static void enviardatos_bd(Prenda prod){
+        Datos_BD datos = new Datos_BD();
         datos.enviar_datos(prod);
     }
 
     private static void consulta_BD(){
-        Enviar datos = new Enviar();
+        Datos_BD datos = new Datos_BD();
         Datos_consulta consult_a = datos.getConsulta();
 
         String codigo_busqueda = JOptionPane.showInputDialog("Busqueda por medio de codigo\n"
@@ -379,8 +382,6 @@ public class Main
         
         datos.consultar_datos(codigo_busqueda);
 
-        
-
         JOptionPane.showMessageDialog(null, "-Articulo encontrado-"
         +"\nCategoria: "+consult_a.getCategoria()
         +"\nMarca: "+consult_a.getMarca()
@@ -390,22 +391,3 @@ public class Main
         +"\nPrecio: HNL. "+consult_a.getPrecio());
     }
 }
-
-
-
-
-/*
-    private static void editarCodigo(Producto producto){
-        String cod = JOptionPane.showInputDialog("Escriba un nuevo codigo");
-    
-        do{
-            //Verifica si la longitud es de 6 caracteres
-            if (producto.getCodigo().length()!=6) {
-                JOptionPane.showMessageDialog(null, "El codigo debe tener 6 caracteres", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                cod=leerCadena("Codigo");
-
-                producto.setCodigo(cod);
-            }
-        } while(producto.getCodigo().length()!=6);
-    }
-*/
