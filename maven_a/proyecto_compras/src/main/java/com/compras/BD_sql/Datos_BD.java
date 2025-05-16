@@ -46,8 +46,6 @@ public class Datos_BD extends ConexionSQL{
                 consult.setTalla(rs.getString("talla"));
                 consult.setStock(rs.getInt("stock"));
                 consult.setPrecio(rs.getDouble("precio"));
-
-
             }
             else {
                 JOptionPane.showMessageDialog(null, "No se han encontrado datos relacionados", "Sin datos", JOptionPane.WARNING_MESSAGE);
@@ -57,11 +55,8 @@ public class Datos_BD extends ConexionSQL{
                 consult.setColor("");
                 consult.setTalla("");
                 consult.setStock(0);
-                consult.setPrecio(0);
-
-                
+                consult.setPrecio(0);      
             }
-
             state.close();
             conn.close();
 
@@ -69,7 +64,6 @@ public class Datos_BD extends ConexionSQL{
             JOptionPane.showMessageDialog(null, "No se ha podido acceder a los datos"+"\nError: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
     public Datos_consulta getConsulta(){
         return consult;
     }
