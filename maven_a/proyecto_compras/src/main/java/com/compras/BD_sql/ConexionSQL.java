@@ -10,7 +10,7 @@ public class ConexionSQL {
 
     final String url = "jdbc:postgresql://localhost:5433/bd_hola";
     final String usuario = "-usuario-";
-    final String contrasena = "-contrasena";
+    final String contrasena = "-contrasena-";
     
     public Connection conectar(){
         try {
