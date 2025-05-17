@@ -30,7 +30,6 @@ public class Main
         +"\n0. Salir";
 
         do {
-            //Se le solicita
             dato_entrada = JOptionPane.showInputDialog(null, menuInicio, "Inicio", JOptionPane.INFORMATION_MESSAGE);
 
             if (dato_entrada==null) {
