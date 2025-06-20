@@ -22,7 +22,7 @@ public class Main {
         boolean bandera = false;
 
         while (!bandera) {
-            System.out.println("-Farmacia-"); 
+            System.out.println("-Farmacia El buen Sapito-"); 
             codigo=leerCodigo(input);
             venta=leerVenta(input);
 
