@@ -1,0 +1,29 @@
+# Archivos compilados de cualquier proyecto
+**/bin/
+
+# Ignorar carpetas de compilación de Maven en todos los módulos
+**/target/
+
+# Archivos de respaldo de Maven
+**/pom.xml.tag
+**/pom.xml.releaseBackup
+**/pom.xml.versionsBackup
+**/pom.xml.next
+**/release.properties
+**/dependency-reduced-pom.xml
+**/buildNumber.properties
+
+# Wrapper de Maven
+.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+
+# VS Code
+.vscode/
+
+# Archivos de log
+*.log
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
