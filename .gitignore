@@ -1,5 +1,5 @@
 # Archivos compilados de cualquier proyecto
-**/bin/
+*/bin/
 
 # Ignorar carpetas de compilación de Maven en todos los módulos
 **/target/
