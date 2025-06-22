@@ -8,10 +8,9 @@ import com.prueba.cliente.Cliente;
 public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-
         int codigo;
         double venta;
-
+        
         //Variables de suma
         double sum_te = 0, sum_cl = 0, sum_empl = 0, sum_part = 0; //Sumador para clientes de la tercera edad /clientes con receta / empleados con receta / clientes particulares 
 
