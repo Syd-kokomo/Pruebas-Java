@@ -1,0 +1,19 @@
+#Java
+.mtj.tmp/
+*.class
+*.jar
+hs_err_pid*
+
+#Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.next
+pom.xml.bak
+.mvn/timing.properties
+
+#Visual Studio Code
+.vscode/
+.code-workspace
+
+*.log
