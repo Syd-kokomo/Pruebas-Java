@@ -16,4 +16,8 @@ pom.xml.bak
 .vscode/
 .code-workspace
 
+#Otros formatos de archivos
+*.bin
+*.tmp
+*.txt
 *.log
